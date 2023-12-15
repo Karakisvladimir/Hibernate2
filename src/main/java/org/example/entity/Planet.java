@@ -1,15 +1,17 @@
 package org.example.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
 @Data
+@Table(name = "planets")
 public class Planet {
     @Id
     @Pattern(regexp = "[A-Z0-9]+", message = "Invalid planet ID")
@@ -20,6 +22,12 @@ public class Planet {
     @NotBlank(message = "Planet name cannot be blank")
     @Size(max = 500, message = "Planet name length should be at most 500")
     private String name;
+
+    @OneToMany(mappedBy = "fromPlanet", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Ticket> fromPlanetTickets = new HashSet<>();
+
+    @OneToMany(mappedBy = "toPlanet", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Ticket> toPlanetTickets = new HashSet<>();
 
 }
 
